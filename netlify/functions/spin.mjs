@@ -77,14 +77,24 @@ export const handler = async (event) => {
   const robloxKey = `claimed/roblox/${robloxUsername}`;
   const discordKey = `claimed/discord/${discordUsername}`;
 
-  const reward = getRandomReward();
+  const [robloxExisting, discordExisting] = await Promise.all([
+    store.getMetadata(robloxKey),
+    store.getMetadata(discordKey),
+  ]);
+
+  if (robloxExisting !== null) {
+    return json(400, { error: 'This Roblox username has already claimed a reward.' });
+  }
+
+  if (discordExisting !== null) {
+    return json(400, { error: 'This Discord username has already claimed a reward.' });
+  }
 
   const claimRecord = {
     claimedAt: now,
     robloxUsername,
     discordUsername,
     voucherCode,
-    reward: reward.amount,
   };
 
   const { modified: robloxReserved } = await store.setJSON(robloxKey, claimRecord, { onlyIfNew: true });
@@ -97,6 +107,12 @@ export const handler = async (event) => {
     await store.delete(robloxKey);
     return json(400, { error: 'This Discord username has already claimed a reward.' });
   }
+
+  const reward = getRandomReward();
+  await Promise.all([
+    store.setJSON(robloxKey, { ...claimRecord, reward: reward.amount }),
+    store.setJSON(discordKey, { ...claimRecord, reward: reward.amount }),
+  ]);
 
   const webhookUrl = process.env.DISCORD_WEBHOOK_URL;
   if (webhookUrl) {
