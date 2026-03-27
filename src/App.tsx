@@ -8,7 +8,7 @@ const REWARDS = [
   { amount: 9, color: '#fb923c' },
   { amount: 69, color: '#facc15' },
   { amount: 696, color: '#4ade80' },
-  { amount: 6969, color: '#c084fc' },
+  { amount: 6.969, color: '#c084fc' },
 ];
 
 type ClaimRecord = {
@@ -306,15 +306,6 @@ export default function App() {
             </button>
           </form>
 
-          <div className="mt-4">
-            <button
-              type="button"
-              onClick={() => navigate('/claims')}
-              className="w-full px-4 py-2 rounded-lg bg-slate-900 border border-slate-700 text-slate-200 hover:bg-slate-950"
-            >
-              View Claims
-            </button>
-          </div>
           
           <div className="mt-6 pt-6 border-t border-slate-700">
             <h3 className="text-sm font-semibold text-slate-300 mb-2">Rewards & Odds:</h3>
@@ -323,7 +314,7 @@ export default function App() {
               <li>• 9 Robux (Common)</li>
               <li>• 69 Robux (Uncommon)</li>
               <li>• 696 Robux (Rare)</li>
-              <li>• 6969 Robux (Legendary)</li>
+              <li>• 6.969 Robux (Legendary)</li>
             </ul>
           </div>
         </div>

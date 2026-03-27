@@ -7,7 +7,7 @@ const REWARDS = [
   { amount: 9, weight: 1000000, color: '#fb923c' },
   { amount: 69, weight: 100000, color: '#facc15' },
   { amount: 696, weight: 10000, color: '#4ade80' },
-  { amount: 6969, weight: 1, color: '#c084fc' },
+  { amount: 6.969, weight: 1, color: '#c084fc' },
 ];
 
 const TOTAL_WEIGHT = REWARDS.reduce((sum, r) => sum + r.weight, 0);
