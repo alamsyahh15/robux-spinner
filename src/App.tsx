@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, type FormEvent } from 'react';
 import { motion } from 'motion/react';
 import confetti from 'canvas-confetti';
 import { Loader2 } from 'lucide-react';
@@ -8,7 +8,7 @@ const REWARDS = [
   { amount: 9, color: '#fb923c' },
   { amount: 69, color: '#facc15' },
   { amount: 696, color: '#4ade80' },
-  { amount: 6.969, color: '#c084fc' },
+  { amount: 6969, color: '#c084fc' },
 ];
 
 export default function App() {
@@ -22,7 +22,7 @@ export default function App() {
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
 
-  const handleSpin = async (e: React.FormEvent) => {
+  const handleSpin = async (e: FormEvent) => {
     e.preventDefault();
     if (!robloxUsername || !discordUsername || !voucherCode) {
       setError('Please fill in all fields');
@@ -161,7 +161,7 @@ export default function App() {
               <li>• 9 Robux (Common)</li>
               <li>• 69 Robux (Uncommon)</li>
               <li>• 696 Robux (Rare)</li>
-              <li>• 6.969 Robux (Legendary)</li>
+              <li>• 6969 Robux (Legendary)</li>
             </ul>
           </div>
         </div>
