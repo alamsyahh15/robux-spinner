@@ -1,3 +1,5 @@
+import { connectLambda, getStore } from '@netlify/blobs';
+
 const VALID_VOUCHERS = ['FREE-ROBUX-2026', 'SPIN-ME', 'LUCKY-DAY', 'COKLAT69'];
 
 const REWARDS = [
@@ -20,8 +22,13 @@ function getRandomReward() {
   return REWARDS[0];
 }
 
+function normalizeUsername(value) {
+  if (typeof value !== 'string') return '';
+  return value.trim().toLowerCase();
+}
+
 function json(statusCode, body) {
-  return {
+  const response = {
     statusCode,
     headers: {
       'Content-Type': 'application/json',
@@ -31,11 +38,16 @@ function json(statusCode, body) {
     },
     body: JSON.stringify(body),
   };
+
+  if (statusCode === 204) response.body = '';
+  return response;
 }
 
-exports.handler = async (event) => {
+export const handler = async (event) => {
   if (event.httpMethod === 'OPTIONS') return json(204, {});
   if (event.httpMethod !== 'POST') return json(405, { error: 'Method not allowed' });
+
+  connectLambda(event);
 
   let payload;
   try {
@@ -44,9 +56,12 @@ exports.handler = async (event) => {
     return json(400, { error: 'Invalid JSON body' });
   }
 
-  const robloxUsername = payload?.robloxUsername;
-  const discordUsername = payload?.discordUsername;
+  const robloxUsernameRaw = payload?.robloxUsername;
+  const discordUsernameRaw = payload?.discordUsername;
   const voucherCode = payload?.voucherCode;
+
+  const robloxUsername = normalizeUsername(robloxUsernameRaw);
+  const discordUsername = normalizeUsername(discordUsernameRaw);
 
   if (!robloxUsername || !discordUsername || !voucherCode) {
     return json(400, { error: 'Missing required fields' });
@@ -56,7 +71,32 @@ exports.handler = async (event) => {
     return json(400, { error: 'Invalid voucher code' });
   }
 
+  const store = getStore('robux-roulette');
+  const now = new Date().toISOString();
+
+  const robloxKey = `claimed/roblox/${robloxUsername}`;
+  const discordKey = `claimed/discord/${discordUsername}`;
+
   const reward = getRandomReward();
+
+  const claimRecord = {
+    claimedAt: now,
+    robloxUsername,
+    discordUsername,
+    voucherCode,
+    reward: reward.amount,
+  };
+
+  const { modified: robloxReserved } = await store.setJSON(robloxKey, claimRecord, { onlyIfNew: true });
+  if (!robloxReserved) {
+    return json(400, { error: 'This Roblox username has already claimed a reward.' });
+  }
+
+  const { modified: discordReserved } = await store.setJSON(discordKey, claimRecord, { onlyIfNew: true });
+  if (!discordReserved) {
+    await store.delete(robloxKey);
+    return json(400, { error: 'This Discord username has already claimed a reward.' });
+  }
 
   const webhookUrl = process.env.DISCORD_WEBHOOK_URL;
   if (webhookUrl) {
@@ -68,7 +108,7 @@ exports.handler = async (event) => {
           embeds: [
             {
               color: 5763719,
-              description: `🎁 **ROBUX REWARD CLAIMED**\n\n👤 **Winner Details**\n**Roblox Username:** ${robloxUsername}\n**Discord Username:** ${discordUsername}\n\n🎟️ **Voucher Info**\n**Code Used:** ${voucherCode}\n\n💰 **Prize**\n**Reward:** ${reward.amount} Robux`,
+              description: `🎁 **ROBUX REWARD CLAIMED**\n\n👤 **Winner Details**\n**Roblox Username:** ${robloxUsernameRaw}\n**Discord Username:** ${discordUsernameRaw}\n\n🎟️ **Voucher Info**\n**Code Used:** ${voucherCode}\n\n💰 **Prize**\n**Reward:** ${reward.amount} Robux`,
             },
           ],
         }),

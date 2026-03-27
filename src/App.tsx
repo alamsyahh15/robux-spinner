@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react';
+import { useEffect, useState, type FormEvent } from 'react';
 import { motion } from 'motion/react';
 import confetti from 'canvas-confetti';
 import { Loader2 } from 'lucide-react';
@@ -11,7 +11,17 @@ const REWARDS = [
   { amount: 6969, color: '#c084fc' },
 ];
 
+type ClaimRecord = {
+  claimedAt?: string;
+  robloxUsername?: string;
+  discordUsername?: string;
+  voucherCode?: string;
+  reward?: number;
+};
+
 export default function App() {
+  const [pathname, setPathname] = useState(() => window.location.pathname);
+
   const [robloxUsername, setRobloxUsername] = useState('');
   const [discordUsername, setDiscordUsername] = useState('');
   const [voucherCode, setVoucherCode] = useState('');
@@ -21,6 +31,65 @@ export default function App() {
   const [rotation, setRotation] = useState(0);
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
+  const [claims, setClaims] = useState<ClaimRecord[]>([]);
+  const [claimsLoading, setClaimsLoading] = useState(false);
+  const [claimsError, setClaimsError] = useState('');
+  const [isResetting, setIsResetting] = useState(false);
+
+  const loadClaims = async () => {
+    setClaimsLoading(true);
+    setClaimsError('');
+    try {
+      const response = await fetch('/api/claims', { method: 'GET' });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || 'Failed to load claims');
+      setClaims(Array.isArray(data.records) ? data.records : []);
+    } catch (err: any) {
+      setClaimsError(err.message || 'Failed to load claims');
+    } finally {
+      setClaimsLoading(false);
+    }
+  };
+
+  const handleResetClaims = async () => {
+    const ok = window.confirm('Reset semua data claim?');
+    if (!ok) return;
+    setIsResetting(true);
+    setClaimsError('');
+    try {
+      const response = await fetch('/api/reset', { method: 'POST' });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || 'Failed to reset claims');
+      await loadClaims();
+    } catch (err: any) {
+      setClaimsError(err.message || 'Failed to reset claims');
+    } finally {
+      setIsResetting(false);
+    }
+  };
+
+  const formatDateTime = (value?: string) => {
+    if (!value) return '';
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return value;
+    return date.toLocaleString();
+  };
+
+  useEffect(() => {
+    const onPopState = () => setPathname(window.location.pathname);
+    window.addEventListener('popstate', onPopState);
+    return () => window.removeEventListener('popstate', onPopState);
+  }, []);
+
+  useEffect(() => {
+    if (pathname === '/claims') void loadClaims();
+  }, [pathname]);
+
+  const navigate = (to: string) => {
+    if (to === window.location.pathname) return;
+    window.history.pushState({}, '', to);
+    setPathname(to);
+  };
 
   const handleSpin = async (e: FormEvent) => {
     e.preventDefault();
@@ -77,8 +146,91 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-900 text-white flex flex-col items-center justify-center p-4 font-sans">
-      <div className="max-w-4xl w-full grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+    <div className="min-h-screen bg-slate-900 text-white flex flex-col items-center p-4 font-sans">
+      {pathname === '/claims' ? (
+        <div className="max-w-6xl w-full pt-10 pb-10">
+          <div className="flex items-center justify-between mb-4">
+            <button
+              type="button"
+              onClick={() => navigate('/')}
+              className="px-4 py-2 rounded-lg bg-slate-800 border border-slate-700 text-slate-200 hover:bg-slate-700"
+            >
+              Back
+            </button>
+          </div>
+
+          <div className="bg-slate-800 rounded-2xl shadow-2xl border border-slate-700 overflow-hidden">
+            <div className="p-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <h2 className="text-lg font-semibold text-slate-100">Claimed List</h2>
+                <p className="text-sm text-slate-400">Total: {claims.length}</p>
+              </div>
+              <div className="flex gap-3">
+                <button
+                  type="button"
+                  onClick={() => void loadClaims()}
+                  disabled={claimsLoading || isResetting}
+                  className="px-4 py-2 rounded-lg bg-slate-900 border border-slate-700 text-slate-200 hover:bg-slate-950 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {claimsLoading ? 'Loading...' : 'Refresh'}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => void handleResetClaims()}
+                  disabled={isResetting || claimsLoading}
+                  className="px-4 py-2 rounded-lg bg-red-500/10 border border-red-500/50 text-red-300 hover:bg-red-500/20 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isResetting ? 'Resetting...' : 'Reset'}
+                </button>
+              </div>
+            </div>
+
+            {claimsError && (
+              <div className="px-6 pb-4">
+                <div className="p-3 bg-red-500/10 border border-red-500/50 rounded-lg text-red-400 text-sm">
+                  {claimsError}
+                </div>
+              </div>
+            )}
+
+            <div className="overflow-x-auto border-t border-slate-700">
+              <table className="min-w-full text-sm">
+                <thead className="bg-slate-900/40 text-slate-300">
+                  <tr>
+                    <th className="text-left font-medium px-4 py-3">#</th>
+                    <th className="text-left font-medium px-4 py-3">Claimed At</th>
+                    <th className="text-left font-medium px-4 py-3">Roblox</th>
+                    <th className="text-left font-medium px-4 py-3">Discord</th>
+                    <th className="text-left font-medium px-4 py-3">Voucher</th>
+                    <th className="text-left font-medium px-4 py-3">Reward</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-700">
+                  {claims.length === 0 ? (
+                    <tr>
+                      <td colSpan={6} className="px-4 py-6 text-center text-slate-400">
+                        {claimsLoading ? 'Loading...' : 'Belum ada yang claim'}
+                      </td>
+                    </tr>
+                  ) : (
+                    claims.map((claim, index) => (
+                      <tr key={`${claim.claimedAt ?? 'na'}-${index}`} className="text-slate-200">
+                        <td className="px-4 py-3 text-slate-400">{index + 1}</td>
+                        <td className="px-4 py-3">{formatDateTime(claim.claimedAt)}</td>
+                        <td className="px-4 py-3">{claim.robloxUsername ?? ''}</td>
+                        <td className="px-4 py-3">{claim.discordUsername ?? ''}</td>
+                        <td className="px-4 py-3">{claim.voucherCode ?? ''}</td>
+                        <td className="px-4 py-3 font-semibold">{claim.reward ?? ''}</td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div className="max-w-4xl w-full grid grid-cols-1 md:grid-cols-2 gap-12 items-center pt-10">
         
         {/* Left Side: Form */}
         <div className="bg-slate-800 p-8 rounded-2xl shadow-2xl border border-slate-700 order-2 md:order-1">
@@ -153,6 +305,16 @@ export default function App() {
               )}
             </button>
           </form>
+
+          <div className="mt-4">
+            <button
+              type="button"
+              onClick={() => navigate('/claims')}
+              className="w-full px-4 py-2 rounded-lg bg-slate-900 border border-slate-700 text-slate-200 hover:bg-slate-950"
+            >
+              View Claims
+            </button>
+          </div>
           
           <div className="mt-6 pt-6 border-t border-slate-700">
             <h3 className="text-sm font-semibold text-slate-300 mb-2">Rewards & Odds:</h3>
@@ -218,6 +380,7 @@ export default function App() {
         </div>
 
       </div>
+      )}
     </div>
   );
 }
