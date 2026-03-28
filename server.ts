@@ -92,7 +92,7 @@ async function startServer() {
             embeds: [
               {
                 color: 5763719, // Warna hijau (Hex: #57F287)
-                description: `🎁 **ROBUX REWARD CLAIMED**\n\n👤 **Winner Details**\n**Roblox Username:** ${robloxUsername}\n**Discord Username:** ${discordUsername}\n\n🎟️ **Voucher Info**\n**Code Used:** ${voucherCode}\n\n💰 **Prize**\n**Reward:** ${reward.amount} Robux\n\n⚠️ **Catatan**\n• Hadiah akan segera dikirimkan ke akun Roblox pemenang.\n• Harap bersabar menunggu proses pengiriman.`
+                description: `🎁 **YEAYY!! ROBUX REWARD CLAIMED**\n\n👤 **Winner Details**\n**Roblox Username:** ${robloxUsername}\n**Discord Username:** ${discordUsername}\n\n🎟️ **Voucher Info**\n**Code Used:** ${voucherCode}\n\n💰 **Prize**\n**Reward:** ${reward.amount} Robux\n\n⚠️ **Catatan**\n• Hadiah akan segera dikirimkan ke akun Roblox pemenang.\n• Harap bersabar menunggu proses pengiriman.`
               }
             ]
           }),

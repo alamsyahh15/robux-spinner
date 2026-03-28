@@ -239,6 +239,16 @@ export default function App() {
           </h1>
           <p className="text-slate-400 mb-6 text-sm">
             Enter your details and a valid voucher code to spin the wheel.
+            <br /> <br/>
+            Untuk claim Free Robux wajib join Discord MedusaBlox dan open ticket. Link Discord:{' '}
+            <a
+              href="https://discord.com/invite/Afs5b76ejR"
+              target="_blank"
+              rel="noreferrer"
+              className="text-purple-300 hover:text-purple-200 underline"
+            >
+              https://discord.com/invite/Afs5b76ejR
+            </a>
           </p>
 
           <form onSubmit={handleSpin} className="space-y-4">
