@@ -14,7 +14,7 @@ if (!fs.existsSync(CHECKPOINT_FILE)) {
   fs.writeFileSync(CHECKPOINT_FILE, JSON.stringify({ robloxUsernames: [], discordUsernames: [] }, null, 2));
 }
 
-const VALID_VOUCHERS = ['FREE-ROBUX-2026', 'SPIN-ME', 'LUCKY-DAY', 'COKLAT69'];
+const VALID_VOUCHERS = ['CHOCONG69','COKLAT69'];
 
 const REWARDS = [
   { amount: 6, weight: 1000000, color: '#f87171' }, // red-400
