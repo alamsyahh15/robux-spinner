@@ -124,7 +124,7 @@ export const handler = async (event) => {
           embeds: [
             {
               color: 5763719,
-              description: `🎁 **ROBUX REWARD CLAIMED**\n\n👤 **Winner Details**\n**Roblox Username:** ${robloxUsernameRaw}\n**Discord Username:** @${discordUsernameRaw}\n\n🎟️ **Voucher Info**\n**Code Used:** ${voucherCode}\n\n💰 **Prize**\n**Reward:** ${reward.amount} Robux`,
+              description: `🎁 **ROBUX REWARD CLAIMED**\n\n👤 **Winner Details**\n**Roblox Username:** ${robloxUsernameRaw}\n**Discord Username:** <@${discordUsernameRaw}>\n\n🎟️ **Voucher Info**\n**Code Used:** ${voucherCode}\n\n💰 **Prize**\n**Reward:** ${reward.amount} Robux`,
             },
           ],
         }),
