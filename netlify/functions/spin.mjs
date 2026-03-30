@@ -1,6 +1,6 @@
 import { connectLambda, getStore } from '@netlify/blobs';
 
-const VALID_VOUCHERS = ['FREE-ROBUX-2026', 'SPIN-ME', 'LUCKY-DAY', 'COKLAT69'];
+const VALID_VOUCHERS = ['SPIN-MEEE','COKLAT69','CHOCONG69'];
 
 const REWARDS = [
   { amount: 6, weight: 1000000, color: '#f87171' },
