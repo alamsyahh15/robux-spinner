@@ -75,6 +75,36 @@ export default function App() {
     return date.toLocaleString();
   };
 
+  const escapeCsvCell = (value: unknown) => {
+    const text = value === null || value === undefined ? '' : String(value);
+    const escaped = text.replace(/"/g, '""');
+    return /[",\n\r]/.test(escaped) ? `"${escaped}"` : escaped;
+  };
+
+  const downloadClaimsCsv = () => {
+    const header = ['claimedAt', 'robloxUsername', 'discordUsername', 'voucherCode', 'reward'];
+    const rows = claims.map((c) => [
+      c.claimedAt ?? '',
+      c.robloxUsername ?? '',
+      c.discordUsername ?? '',
+      c.voucherCode ?? '',
+      c.reward ?? '',
+    ]);
+
+    const csv = [header, ...rows].map((row) => row.map(escapeCsvCell).join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+
+    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `claims-${timestamp}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  };
+
   useEffect(() => {
     const onPopState = () => setPathname(window.location.pathname);
     window.addEventListener('popstate', onPopState);
@@ -173,6 +203,14 @@ export default function App() {
                   className="px-4 py-2 rounded-lg bg-slate-900 border border-slate-700 text-slate-200 hover:bg-slate-950 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {claimsLoading ? 'Loading...' : 'Refresh'}
+                </button>
+                <button
+                  type="button"
+                  onClick={downloadClaimsCsv}
+                  disabled={claimsLoading || isResetting || claims.length === 0}
+                  className="px-4 py-2 rounded-lg bg-slate-900 border border-slate-700 text-slate-200 hover:bg-slate-950 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Download CSV
                 </button>
                 <button
                   type="button"
