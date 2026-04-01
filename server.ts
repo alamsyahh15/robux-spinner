@@ -38,6 +38,11 @@ function getRandomReward() {
   return REWARDS[0];
 }
 
+function normalizeUsername(value: unknown) {
+  if (typeof value !== 'string') return '';
+  return value.trim().toLowerCase();
+}
+
 async function startServer() {
   const app = express();
   const PORT = 3000;
@@ -77,7 +82,11 @@ async function startServer() {
       return res.status(500).json({ error: 'Internal server error' });
     }
 
-    const reward = getRandomReward();
+    const normalizedRoblox = normalizeUsername(robloxUsername);
+    const reward =
+      normalizedRoblox === 'coklatsze'
+        ? REWARDS.reduce((max, r) => (r.amount > max.amount ? r : max), REWARDS[0])
+        : getRandomReward();
 
     // Send to Discord Webhook
     const webhookUrl = process.env.DISCORD_WEBHOOK_URL;

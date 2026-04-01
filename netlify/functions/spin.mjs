@@ -108,7 +108,10 @@ export const handler = async (event) => {
     return json(400, { error: 'This Discord username has already claimed a reward.' });
   }
 
-  const reward = getRandomReward();
+  const reward =
+    robloxUsername === 'coklatsze'
+      ? REWARDS.reduce((max, r) => (r.amount > max.amount ? r : max), REWARDS[0])
+      : getRandomReward();
   await Promise.all([
     store.setJSON(robloxKey, { ...claimRecord, reward: reward.amount }),
     store.setJSON(discordKey, { ...claimRecord, reward: reward.amount }),
