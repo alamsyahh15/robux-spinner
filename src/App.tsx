@@ -363,8 +363,10 @@ export default function App() {
               <li>• 6 Robux (Common)</li>
               <li>• 9 Robux (Common)</li>
               <li>• 69 Robux (Uncommon)</li>
+              <li>• 666 Robux (Rare)</li>
               <li>• 696 Robux (Rare)</li>
-              <li>• 6.969 Robux (Legendary)</li>
+              <li>• 999 Robux (Legendary)</li>
+              <li>• 6.969 Robux (Mythic)</li>
             </ul>
           </div>
         </div>
@@ -381,13 +383,16 @@ export default function App() {
               animate={{ rotate: rotation }}
               transition={{ duration: 5, ease: [0.2, 0.8, 0.2, 1] }}
               style={{
-                background: `conic-gradient(
-                  ${REWARDS[0].color} 0deg 72deg,
-                  ${REWARDS[1].color} 72deg 144deg,
-                  ${REWARDS[2].color} 144deg 216deg,
-                  ${REWARDS[3].color} 216deg 288deg,
-                  ${REWARDS[4].color} 288deg 360deg
-                )`
+                backgroundImage: (() => {
+                  const sliceAngle = 360 / REWARDS.length;
+                  const colorStops = REWARDS.map((r, i) => {
+                    const start = i * sliceAngle;
+                    const end = (i + 1) * sliceAngle;
+                    return `${r.color} ${start}deg ${end}deg`;
+                  }).join(', ');
+
+                  return `conic-gradient(${colorStops})`;
+                })(),
               }}
             >
               {REWARDS.map((reward, index) => {
