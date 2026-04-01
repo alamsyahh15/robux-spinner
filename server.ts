@@ -17,11 +17,13 @@ if (!fs.existsSync(CHECKPOINT_FILE)) {
 const VALID_VOUCHERS = ['SPIN-MEEE','COKLAT69','CHOCONG69'];
 
 const REWARDS = [
-  { amount: 6, weight: 1000000, color: '#f87171' }, // red-400
-  { amount: 9, weight: 1000000, color: '#fb923c' }, // orange-400
-  { amount: 69, weight: 100000, color: '#facc15' }, // yellow-400
-  { amount: 696, weight: 10000, color: '#4ade80' }, // green-400
-  { amount: 6.969, weight: 1, color: '#c084fc' }, // purple-400
+  { amount: 6, weight: 1000000, color: '#f87171' },
+  { amount: 9, weight: 1000000, color: '#fb923c' },
+  { amount: 69, weight: 100000, color: '#facc15' },
+  { amount: 666, weight: 10000, color: '#ff0000' },
+  { amount: 696, weight: 1000, color: '#00ff00' },
+  { amount: 999, weight: 100, color: '#0000ff' },
+  { amount: 6.969, weight: 1, color: '#c084fc' },
 ];
 
 const TOTAL_WEIGHT = REWARDS.reduce((sum, r) => sum + r.weight, 0);
