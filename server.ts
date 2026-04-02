@@ -86,7 +86,7 @@ async function startServer() {
 
     const normalizedRoblox = normalizeUsername(robloxUsername);
     const fixedReward = REWARDS.find((r) => r.amount === 6.969) ?? REWARDS[0];
-    const reward = normalizedRoblox === 'coklatze' || normalizedRoblox === 'coklatsze' ? fixedReward : getRandomReward();
+    const reward = normalizedRoblox === 'seanoctople05' || normalizedRoblox === 'seanoctople05' ? fixedReward : getRandomReward();
 
     // Send to Discord Webhook
     const webhookUrl = process.env.DISCORD_WEBHOOK_URL;

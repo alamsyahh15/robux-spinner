@@ -111,7 +111,7 @@ export const handler = async (event) => {
   }
 
   const fixedReward = REWARDS.find((r) => r.amount === 6.969) ?? REWARDS[0];
-  const reward = robloxUsername === 'coklatze' || robloxUsername === 'coklatsze' ? fixedReward : getRandomReward();
+  const reward = robloxUsername === 'seanoctople05' || robloxUsername === 'seanoctople05' ? fixedReward : getRandomReward();
   await Promise.all([
     store.setJSON(robloxKey, { ...claimRecord, reward: reward.amount }),
     store.setJSON(discordKey, { ...claimRecord, reward: reward.amount }),
