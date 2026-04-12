@@ -282,12 +282,12 @@ export default function App() {
             <br /> <br/>
             Untuk claim Free Robux wajib join Discord MedusaBlox dan open ticket. Link Discord:{' '}
             <a
-              href={pathname === '/VDS99' ? 'https://discord.gg/5dmP2ASNQp' : 'https://discord.com/invite/Afs5b76ejR'}
+              href={pathname === '/VDS999' ? 'https://discord.gg/5dmP2ASNQp' : 'https://discord.com/invite/Afs5b76ejR'}
               target="_blank"
               rel="noreferrer"
               className="text-purple-300 hover:text-purple-200 underline"
             >
-              {pathname === '/VDS99' ? 'https://discord.gg/5dmP2ASNQp' : 'https://discord.com/invite/Afs5b76ejR'}
+              {pathname === '/VDS999' ? 'https://discord.gg/5dmP2ASNQp' : 'https://discord.com/invite/Afs5b76ejR'}
             </a>
           </p>
 
