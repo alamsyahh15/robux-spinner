@@ -280,7 +280,7 @@ export default function App() {
           <p className="text-slate-400 mb-6 text-sm">
             Enter your details and a valid voucher code to spin the wheel.
             <br /> <br/>
-            Untuk claim Free Robux wajib join Discord MedusaBlox dan open ticket. Link Discord:{' '}
+            Untuk claim Free Robux wajib join Discord {pathname === '/VDS999' ? 'VDS (Violence District Sport)' : 'MedusaBlox'} dan open ticket. Link Discord:{' '}
             <a
               href={pathname === '/VDS999' ? 'https://discord.gg/5dmP2ASNQp' : 'https://discord.com/invite/Afs5b76ejR'}
               target="_blank"
