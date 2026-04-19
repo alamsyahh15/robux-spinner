@@ -311,7 +311,7 @@ export default function App() {
               animate={{ x: [0, 6, 0] }}
               transition={{ duration: 1.2, repeat: Infinity, ease: 'easeInOut' }}
             >
-              <span className="text-xs font-semibold text-slate-100">Open Claims</span>
+              <span className="text-xs font-semibold text-slate-100">Order Now</span>
               <ArrowRight className="w-4 h-4 text-slate-100" />
             </motion.div>
           </motion.a>
