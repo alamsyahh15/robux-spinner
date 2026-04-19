@@ -1,7 +1,8 @@
 import { useEffect, useState, type FormEvent } from 'react';
 import { motion } from 'motion/react';
 import confetti from 'canvas-confetti';
-import { Loader2 } from 'lucide-react';
+import { ArrowRight, Loader2 } from 'lucide-react';
+import vdsBanner from '../assets/vds_banner.png';
 
 const REWARDS = [
   { amount: 6, weight: 1000000, color: '#f87171' },
@@ -21,12 +22,28 @@ type ClaimRecord = {
   reward?: number;
 };
 
+const CLAIMS_URL = 'https://medusabloxorder.netlify.app/';
+
+const getVoucherFromPath = (path: string) => {
+  const segment = path.replace(/^\/+/, '').split('/')[0] ?? '';
+  if (!segment) return '';
+  if (segment.toLowerCase() === 'claims') return '';
+  try {
+    return decodeURIComponent(segment);
+  } catch {
+    return segment;
+  }
+};
+
 export default function App() {
   const [pathname, setPathname] = useState(() => window.location.pathname);
+  const voucherFromPath = getVoucherFromPath(pathname);
+  const voucherFromPathUpper = voucherFromPath.toUpperCase();
 
   const [robloxUsername, setRobloxUsername] = useState('');
   const [discordUsername, setDiscordUsername] = useState('');
   const [voucherCode, setVoucherCode] = useState('');
+  const discordInviteUrl = 'https://discord.com/invite/Afs5b76ejR';
   
   const [isSpinning, setIsSpinning] = useState(false);
   const [spinResult, setSpinResult] = useState<number | null>(null);
@@ -112,6 +129,11 @@ export default function App() {
     window.addEventListener('popstate', onPopState);
     return () => window.removeEventListener('popstate', onPopState);
   }, []);
+
+  useEffect(() => {
+    if (!voucherFromPathUpper) return;
+    setVoucherCode(voucherFromPathUpper);
+  }, [voucherFromPathUpper]);
 
   useEffect(() => {
     if (pathname === '/claims') void loadClaims();
@@ -274,20 +296,39 @@ export default function App() {
         
         {/* Left Side: Form */}
         <div className="bg-slate-800 p-8 rounded-2xl shadow-2xl border border-slate-700 order-2 md:order-1">
+          <motion.a
+            href={CLAIMS_URL}
+            target="_blank"
+            rel="noreferrer"
+            className="mb-6 block relative overflow-hidden rounded-xl border border-slate-700 shadow-lg"
+            whileHover={{ scale: 1.01 }}
+            whileTap={{ scale: 0.99 }}
+          >
+            <img src={vdsBanner} alt="VDS Banner" className="w-full h-auto" />
+            <motion.div
+              className="absolute bottom-3 right-3 flex items-center gap-2 rounded-full border border-slate-700 bg-slate-950/70 px-3 py-2 backdrop-blur"
+              initial={false}
+              animate={{ x: [0, 6, 0] }}
+              transition={{ duration: 1.2, repeat: Infinity, ease: 'easeInOut' }}
+            >
+              <span className="text-xs font-semibold text-slate-100">Open Claims</span>
+              <ArrowRight className="w-4 h-4 text-slate-100" />
+            </motion.div>
+          </motion.a>
           <h1 className="text-3xl font-bold mb-2 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600">
             Free Robux Spin!
           </h1>
           <p className="text-slate-400 mb-6 text-sm">
             Enter your details and a valid voucher code to spin the wheel.
             <br /> <br/>
-            Untuk claim Free Robux wajib join Discord {pathname === '/VDS999' ? 'VDS (Violence District Sport)' : 'MedusaBlox'} dan open ticket. Link Discord:{' '}
+            Untuk claim Free Robux wajib join Discord MedusaBlox dan open ticket. Link Discord:{' '}
             <a
-              href={pathname === '/VDS999' ? 'https://discord.gg/5dmP2ASNQp' : 'https://discord.com/invite/Afs5b76ejR'}
+              href={discordInviteUrl}
               target="_blank"
               rel="noreferrer"
               className="text-purple-300 hover:text-purple-200 underline"
             >
-              {pathname === '/VDS999' ? 'https://discord.gg/5dmP2ASNQp' : 'https://discord.com/invite/Afs5b76ejR'}
+              {discordInviteUrl}
             </a>
           </p>
 
