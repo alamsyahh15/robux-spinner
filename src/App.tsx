@@ -296,6 +296,9 @@ export default function App() {
         
         {/* Left Side: Form */}
         <div className="bg-slate-800 p-8 rounded-2xl shadow-2xl border border-slate-700 order-2 md:order-1">
+          <div className="mb-3 text-sm font-semibold text-slate-100">
+            Mau Top Up Murah Special Hari ? Click Order Now
+          </div>
           <motion.a
             href={CLAIMS_URL}
             target="_blank"
