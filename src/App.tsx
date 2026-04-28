@@ -22,7 +22,7 @@ type ClaimRecord = {
   reward?: number;
 };
 
-const CLAIMS_URL = 'https://medusabloxorder.netlify.app/';
+const CLAIMS_URL = 'https://medusablox.com/';
 
 const getVoucherFromPath = (path: string) => {
   const segment = path.replace(/^\/+/, '').split('/')[0] ?? '';
