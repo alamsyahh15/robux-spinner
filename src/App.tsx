@@ -309,7 +309,7 @@ export default function App() {
           >
             <img src={vdsBanner} alt="VDS Banner" className="w-full h-auto" />
             <motion.div
-              className="absolute bottom-3 left-3 flex items-center gap-2 rounded-full border border-slate-700 bg-slate-950/70 px-3 py-2 backdrop-blur"
+              className="absolute top-3 left-3 flex items-center gap-2 rounded-full border border-slate-700 bg-slate-950/70 px-3 py-2 backdrop-blur"
               initial={false}
               animate={{ x: [0, 6, 0] }}
               transition={{ duration: 1.2, repeat: Infinity, ease: 'easeInOut' }}
